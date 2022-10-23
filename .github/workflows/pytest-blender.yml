@@ -12,7 +12,7 @@ on:
 
 jobs:
   test:
-    name: Test with Blender ${{ matrix.blender-version }} on ${{ matrix.os }}
+    name: Test with Blender ${{ matrix.blender-version }} on ${{ matrix.platform }}
     runs-on: ${{ matrix.platform }}
     strategy:
       matrix:
