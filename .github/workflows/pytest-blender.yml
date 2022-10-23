@@ -35,7 +35,7 @@ jobs:
         id: cache-blender
         with:
           path: |
-            /home/runner/work/blender-*
+            ~/downloads/blender-*
             _blender-executable-path.txt
           key: ${{ runner.os }}-${{ matrix.blender-version }}
       - name: Download Blender ${{ matrix.blender-version }}
@@ -45,7 +45,7 @@ jobs:
           python -m pip install --upgrade blender-downloader
           printf "%s" "$(blender-downloader \
           ${{ matrix.blender-version }} --extract --remove-compressed \
-          --output-directory ../../ \
+          --output-directory ~/downloads \
           --quiet --print-blender-executable)" > _blender-executable-path.txt
       - name: Install dependencies
         id: install-dependencies
