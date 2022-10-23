@@ -19,7 +19,6 @@ jobs:
         platform:
           - ubuntu-latest
           - macOS-latest
-          - windows-latest
         blender-version:
           - '3.3.0'
           - '3.3.1'
