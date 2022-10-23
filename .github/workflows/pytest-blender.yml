@@ -35,8 +35,8 @@ jobs:
         id: cache-blender
         with:
           path: |
-            ~/runner/work/blender-*
-            _blender-executable-path.txt
+            /home/runner/work/blender-*
+            /home/runner/work/_blender-executable-path.txt
           key: ${{ runner.os }}-${{ matrix.blender-version }}
       - name: Download Blender ${{ matrix.blender-version }}
         if: steps.cache-blender.outputs.cache-hit != 'true'
@@ -46,12 +46,12 @@ jobs:
           printf "%s" "$(blender-downloader \
           ${{ matrix.blender-version }} --extract --remove-compressed \
           --output-directory ~/runner/work/ \
-          --quiet --print-blender-executable)" > _blender-executable-path.txt
+          --quiet --print-blender-executable)" > /home/runner/work/_blender-executable-path.txt
       - name: Install dependencies
         id: install-dependencies
         run: |
           python -m pip install pytest-blender pytest
-          blender_executable="$(< _blender-executable-path.txt)"
+          blender_executable="$(< /home/runner/work/_blender-executable-path.txt)"
           python_blender_executable="$(pytest-blender --blender-executable $blender_executable)"
           $python_blender_executable -m ensurepip
           $python_blender_executable -m pip install pytest
