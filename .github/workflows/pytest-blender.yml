@@ -35,7 +35,7 @@ jobs:
         id: cache-blender
         with:
           path: |
-            blender-*
+            ../../blender-*
             _blender-executable-path.txt
           key: ${{ runner.os }}-${{ matrix.blender-version }}
       - name: Download Blender ${{ matrix.blender-version }}
