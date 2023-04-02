@@ -1,3 +1,9 @@
+#!/usr/bin/python3
+
+"""Contains code for drawing the ARF menu at the top of the screen
+As well as the code for mode selection. Eventually when the ARF menu contains
+more things, it should probably be moved to its own file."""
+
 import bpy
 
 class ARF_OT_Armature_Mode(bpy.types.Operator):
@@ -6,6 +12,7 @@ class ARF_OT_Armature_Mode(bpy.types.Operator):
 
     def execute(self, context):
         for obj in context.scene.objects:
+            assert hasattr(obj, 'ARF')
             if (obj.type == "ARMATURE"):
                 obj.hide_set(False)
             else:
@@ -19,6 +26,7 @@ class ARF_OT_Skeleton_Mode(bpy.types.Operator):
 
     def execute(self, context):
         for obj in context.scene.objects:
+            assert hasattr(obj, 'ARF')
             if (obj.ARF.object_type == "BONE"):
                 obj.hide_set(False)
             elif (obj.ARF.object_type != "NONE"):
@@ -41,33 +49,22 @@ class ARF_OT_Smart_Object_Mode(bpy.types.Operator):
         for obj in context.scene.objects:
             obj.hide_set(True)
 
-        # Now get all objects tied to geom nodes tied to the selected object to unhide those
+        # Now get all objects tied to geom nodes
+        # tied to the selected object to unhide those.
         for selection in selected:
-            for modifier in selection.modifiers:
-                if modifier.type != 'NODES':
-                    continue
-                # Disabled geom node modifiers sometimes do not contain a node_group
-                if (modifier.node_group == None):
-                    continue
-
-                for input in modifier.node_group.inputs:
-                    if not (isinstance(input, bpy.types.NodeSocketInterfaceObject)):
-                        continue
-
-                    # For some reason input.default_value is a copy of the object and not the actual
-                    # object in the scene, so we need to get the actual object in the scene.
-                    inputobj = bpy.context.scene.objects.get(input.default_value.name)
-                    inputobj.hide_set(False)
-                    # We also need to set every parent to also be visible
-                    parent = inputobj.parent
-                    while (parent != None):
-                        parent.hide_set(False)
-                        parent = parent.parent
+            assert hasattr(selection, 'ARF')
+            for geom_c in selection.ARF.bone_properties.geometry_constraints:
+                geom_c.constraint_object.hide_set(False)
+                # We also need to set every parent to also be visible
+                parent = geom_c.constraint_object.parent
+                while (parent != None):
+                    parent.hide_set(False)
+                    parent = parent.parent
 
             # Now unhide the object itself
             selection.hide_set(False)
-            # If the selection has any parents they must also be made visible to undo
-            # hiding all objects so the selection can be seen
+            # If the selection has any parents they must also be made visible
+            # undoing hiding all objects so the selection can be seen
             parent = selection.parent
             while (parent != None):
                 parent.hide_set(False)
@@ -81,6 +78,7 @@ class ARF_OT_Muscle_Mode(bpy.types.Operator):
 
     def execute(self, context):
         for obj in context.scene.objects:
+            assert hasattr(obj, 'ARF')
             if (obj.ARF.object_type == "MUSCLE" or obj.ARF.object_type == "BONE"):
                 obj.hide_set(False)
             elif (obj.ARF.object_type != "NONE"):
@@ -94,6 +92,7 @@ class ARF_OT_Skin_Mode(bpy.types.Operator):
 
     def execute(self, context):
         for obj in context.scene.objects:
+            assert hasattr(obj, 'ARF')
             if (obj.ARF.object_type == "SKIN"):
                 obj.hide_set(False)
             elif (obj.ARF.object_type != "NONE"):

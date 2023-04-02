@@ -8,12 +8,10 @@ from . import mode_selection
 def register_all():
     bone_properties.register()
     mode_selection.register()
-    #object_type_selection.register()
     print("Registered scripts.ui")
 
 
 def unregister_all():
     bone_properties.unregister()
     mode_selection.unregister()
-    #object_type_selection.unregister()
     print("Unregistered scripts.ui")
